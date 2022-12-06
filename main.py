@@ -1,14 +1,17 @@
 # import numpy
+
 from math import inf
 import numpy as np
 import scipy.linalg
-
+import math
+# prety print numpy array
+np.set_printoptions(precision=3, suppress=True)
 limit = 1000
 
-xx = 0
-xy = 0
-yx = 0
-yy = 0
+xx = 1
+xy = 1
+yx = 1
+yy = 1
 
 
 
@@ -22,46 +25,45 @@ def calcInv(matrix):
     return np.linalg.inv(matrix)
 
 
+
 def count():
     global xx, xy, yx, yy
     xx += 1
     if xx > limit:
-        xx = 0
+        xx = 1
         xy += 1
     if xy > limit:
-        xy = 0
+        xy = 1
         yx += 1
     if yx > limit:
-        yx = 0
+        yx = 1
         yy += 1
     if yy > limit:
         return False
     return True
 
-def rowNorm(matrix):
-    return scipy.linalg.norm(matrix, ord=1)
-
-def colNorm(matrix):
-    return scipy.linalg.norm(matrix, ord=np.inf)
-
 def main():
+    tol = 0.1
     while count():
         matrix = getNext2x2Matrix()
-        inv = calcInv(matrix)
-        if inv is None:
+        a_c = round(np.linalg.cond(matrix, 1), 5)
+        i_c = round(np.linalg.cond(matrix, np.inf), 5)
+        a = np.linalg.det(matrix)
+        if( abs(a) <= tol ):
             continue
-        A = rowNorm(matrix)
-        A_1 = rowNorm(inv)
-        B = colNorm(matrix)
-        B_1 = colNorm(inv)
-        if(A * A_1 == B * B_1):
+        if( a_c == inf or i_c == inf ):
+            continue
+        if( math.floor(a_c) != math.floor(i_c) ):
+            print("Det: {}".format(a))
+            print(math.floor(a_c),  math.floor(i_c) )
             print(matrix)
-            print(inv)
+            print("\n\n\n\n\n\n")
+
+        # A = rowNorm(matrix)
+        # A_1 = rowNorm(inv)
+        # B = colNorm(matrix)
+        # B_1 = colNorm(inv)
+        # if(A * A_1 != B * B_1):
 
 if __name__ == "__main__":
     main()
-    # matrix = np.array([[1, 2], [3, 4]])
-    # inv = np.linalg.inv(matrix)
-    # print(inv)
-    # print(rowNorm(matrix))
-    # print(colNorm(matrix))
